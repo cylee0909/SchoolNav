@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>SchoolNav</title>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <script src="http://webapi.amap.com/maps?v=1.4.6&key=a0e90f40a2276e6a4e06ef073cf92f9c"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+</head>
+<body>
+<div id="container">
+    <div id="demo"></div>
+</div>
+<script>
+    var imageLayer = new AMap.ImageLayer({
+        url: 'http://amappc.cn-hangzhou.oss-pub.aliyun-inc.com/lbs/static/img/dongwuyuan.jpg',
+        bounds: new AMap.Bounds(
+                [116.327911, 39.939229],
+                [116.342659, 39.946275]
+        ),
+        zooms: [3, 19]
+    });
+    var map = new AMap.Map('container', {
+        resizeEnable: true,
+        center: [116.33719, 39.942384],
+        zoom: 17,
+        layers: [
+//            new AMap.TileLayer(),
+            imageLayer
+        ]
+    });
+
+
+    //在指定位置打开信息窗体
+    function openInfo() {
+        //构建信息窗体中显示的内容
+        var info = [];
+        info.push("<div style=\"padding:0px 0px 0px 4px;\"><b>北京动物园</b>");
+        info.push("电话 : 010-68315131   邮编 : 100102");
+        info.push("地址 :北京市西直门外大街137号</div></div>");
+        infoWindow = new AMap.InfoWindow({
+            content: info.join("<br/>")  //使用默认信息窗体框样式，显示信息内容
+        });
+        infoWindow.open(map, map.getCenter());
+    }
+
+
+
+    map.plugin('AMap.Geolocation', function() {
+        geolocation = new AMap.Geolocation({
+            enableHighAccuracy: true,//是否使用高精度定位，默认:true
+            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+            buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+            zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+            buttonPosition:'RB'
+        });
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition();
+        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+        AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+    });
+    //解析定位结果
+    function onComplete(data) {
+        var str=['定位成功'];
+        str.push('经度：' + data.position.getLng());
+        str.push('纬度：' + data.position.getLat());
+        if(data.accuracy){
+            str.push('精度：' + data.accuracy + ' 米');
+        }//如为IP精确定位结果则没有精度信息
+        str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+        document.getElementById('tip').innerHTML = str.join('<br>');
+    }
+    //解析定位错误信息
+    function onError(data) {
+        document.getElementById('tip').innerHTML = '定位失败';
+    }
+
+
+    map.setLimitBounds(map.getBounds());
+
+    var id, target, options;
+
+    function success(pos) {
+        var crd = pos.coords;
+        if (target.latitude === crd.latitude && target.longitude === crd.longitude) {
+            console.log('Congratulations, you reached the target');
+            navigator.geolocation.clearWatch(id);
+        } else {
+            console.log(crd.latitude+","+crd.longitude)
+        }
+    }
+
+    function error(err) {
+        console.warn('ERROR(' + err.code + '): ' + err.message);
+    }
+
+    target = {
+        latitude : 0,
+        longitude: 0
+    };
+
+    options = {
+        enableHighAccuracy: false,
+        timeout: 5000,
+        maximumAge: 0
+    };
+
+    id = navigator.geolocation.watchPosition(success, error, options);
+
+    openInfo();
+</script>
+</body>
+</html>
