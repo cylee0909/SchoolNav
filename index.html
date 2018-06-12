@@ -23,20 +23,20 @@
         dragEnable: true,
         center: [116.33719, 39.942384],
         zoom: 17,
-        layers: [
-            new AMap.TileLayer(),
-        ]
+        zooms:[14,20],
+        layers:[new AMap.TileLayer({
+            visible:false,    //是否可见
+        })]
     });
 
-
-    map.on('complete', function(){
+//    map.on('complete', function(){
 //        var latlng = new AMap.LngLat(map.getCenter().lng, map.getCenter().lat)
-//        var tw = 30
-//        var th = 30
-//        var start = latlng.offset(-tw * 5,-th * 5)
-//        for (var i = 0; i < 101; i++) {
-//            var col = i % 10
-//            var row = parseInt(i / 10)
+//        var tw = 277
+//        var th = 299
+//        var start = latlng.offset(-tw * 5, th * 5)
+//        for (var i = 0; i < 81; i++) {
+//            var col = i % 9
+//            var row = parseInt(i / 9)
 //            startPos = start.offset(col * tw, row * (-th))
 //            name = prefixInteger(i + 1, 2)
 //            console.log(col + " "+row+" "+name)
@@ -45,14 +45,17 @@
 //                url: 'images/school_'+name+'.jpg',
 //                bounds : new AMap.Bounds(
 //                        startPos,
-//                        startPos.offset(tw, -th)),
+//                        startPos.offset(tw+1, -th-1)),
 //                zoom: 17,
 //            });
 //            map.add(imageLayer);
 //        }
-    });
+//    });
 
-    function prefixInteger(num, length) { return (Array(length).join('0') + num).slice(-length); }
+    function prefixInteger(num, length) {
+        if (num.toString().length > length) return num;
+        return (Array(length).join('0') + num).slice(-length);
+    }
 
 
 
@@ -130,12 +133,12 @@
 //            map.add(imageLayer);
 
             var latlng = data.position
-            var tw = 30
-            var th = 30
-            var start = latlng.offset(-tw * 5,-th * 5)
-            for (var i = 0; i < 101; i++) {
-                var col = i % 10
-                var row = parseInt(i / 10)
+            var tw = 277
+            var th = 299
+            var start = latlng.offset(-tw * 5, th * 5)
+            for (var i = 0; i < 81; i++) {
+                var col = i % 9
+                var row = parseInt(i / 9)
                 startPos = start.offset(col * tw, row * (-th))
                 name = prefixInteger(i + 1, 2)
                 console.log(col + " "+row+" "+name)
@@ -144,7 +147,7 @@
                     url: 'images/school_'+name+'.jpg',
                     bounds : new AMap.Bounds(
                             startPos,
-                            startPos.offset(tw, -th)),
+                            startPos.offset(tw+1, -th-1)),
                     zoom: 17,
                 });
                 map.add(imageLayer);
