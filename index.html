@@ -10,7 +10,7 @@
 </head>
 <body>
 <div id='container'></div>
-<div id="tip"></div>
+<div id="tip">获取定位信息</div>
 <!--<div class="loader loader-7">-->
 <!--<div class="line line1"></div>-->
 <!--<div class="line line2"></div>-->
@@ -25,13 +25,36 @@
         zoom: 17,
         layers: [
             new AMap.TileLayer(),
-//                imageLayer,
         ]
     });
 
+
     map.on('complete', function(){
-        // 地图图块加载完成后触发
+//        var latlng = new AMap.LngLat(map.getCenter().lng, map.getCenter().lat)
+//        var tw = 30
+//        var th = 30
+//        var start = latlng.offset(-tw * 5,-th * 5)
+//        for (var i = 0; i < 101; i++) {
+//            var col = i % 10
+//            var row = parseInt(i / 10)
+//            startPos = start.offset(col * tw, row * (-th))
+//            name = prefixInteger(i + 1, 2)
+//            console.log(col + " "+row+" "+name)
+//            // 地图图块加载完成后触发
+//            var imageLayer = new AMap.ImageLayer({
+//                url: 'images/school_'+name+'.jpg',
+//                bounds : new AMap.Bounds(
+//                        startPos,
+//                        startPos.offset(tw, -th)),
+//                zoom: 17,
+//            });
+//            map.add(imageLayer);
+//        }
     });
+
+    function prefixInteger(num, length) { return (Array(length).join('0') + num).slice(-length); }
+
+
 
     //在指定位置打开信息窗体
     function openInfo() {
@@ -62,12 +85,17 @@
         map.addControl(geolocation);
         AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
         AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
-
-        geolocation.getCurrentPosition();
-        setInterval(function () {
-            geolocation.getCurrentPosition();
-        }, 10 * 1000); // 10s
     });
+
+
+    document.getElementById('tip').onclick = function () {
+        geolocation.getCurrentPosition();
+    }
+
+//    geolocation.getCurrentPosition();
+//    setInterval(function () {
+//        geolocation.getCurrentPosition();
+//    }, 10 * 1000); // 10s
 
     var firstLocation = true;
     var locationCnt = 0;
@@ -92,17 +120,36 @@
                 openInfo();
             },10);
 
-            var imageLayer = new AMap.ImageLayer({
-                url: 'http://amappc.cn-hangzhou.oss-pub.aliyun-inc.com/lbs/static/img/dongwuyuan.jpg',
-                bounds : new AMap.Bounds(
-                    data.position.offset(-300,-200),
-                    data.position.offset(300,200)),
-                zoom: 17,
-            });
-            map.add(imageLayer);
+//            var imageLayer = new AMap.ImageLayer({
+//                url: 'images/school.jpg',
+//                bounds : new AMap.Bounds(
+//                    data.position.offset(-300,-200),
+//                    data.position.offset(300,200)),
+//                zoom: 17,
+//            });
+//            map.add(imageLayer);
+
+            var latlng = data.position
+            var tw = 30
+            var th = 30
+            var start = latlng.offset(-tw * 5,-th * 5)
+            for (var i = 0; i < 101; i++) {
+                var col = i % 10
+                var row = parseInt(i / 10)
+                startPos = start.offset(col * tw, row * (-th))
+                name = prefixInteger(i + 1, 2)
+                console.log(col + " "+row+" "+name)
+                // 地图图块加载完成后触发
+                var imageLayer = new AMap.ImageLayer({
+                    url: 'images/school_'+name+'.jpg',
+                    bounds : new AMap.Bounds(
+                            startPos,
+                            startPos.offset(tw, -th)),
+                    zoom: 17,
+                });
+                map.add(imageLayer);
+            }
         }
-
-
     }
 
 
