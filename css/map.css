@@ -14,6 +14,7 @@ html, body {
     width: 100%;
     height: 100%;
 }
+
 #tip {
     background-color: #fff;
     padding-left: 10px;
@@ -26,8 +27,86 @@ html, body {
     border: 1px solid #ccc;
     line-height: 30px;
 }
-.loader { position: relative; width: 60px; height: 60px; border-radius: 50%; margin: 75px; display: inline-block; vertical-align: middle; }
-.loader-7 .line { width: 8px; position: absolute; border-radius: 5px; bottom: 0; background: -webkit-gradient(linear, left top, left bottom, from(#1ee95d), to(#5714ce)); background: -webkit-linear-gradient(top, #1ee95d, #5714ce); background: linear-gradient(to bottom, #1ee95d, #5714ce); }
-.loader-7 .line1 { left: 0; -webkit-animation: line-grow 0.5s ease alternate infinite; animation: line-grow 0.5s ease alternate infinite; }
-.loader-7 .line2 { left: 20px; -webkit-animation: line-grow 0.5s 0.2s ease alternate infinite; animation: line-grow 0.5s 0.2s ease alternate infinite; }
-.loader-7 .line3 { left: 40px; -webkit-animation: line-grow 0.5s 0.4s ease alternate infinite; animation: line-grow 0.5s 0.4s ease alternate infinite; }
+
+#anim-loader {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #080915;
+}
+
+section {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-block;
+    text-align: center;
+    min-height: 215px;
+    vertical-align: top;
+    margin: 1%;
+    border-radius: 5px;
+    box-shadow: 0px 0px 30px 1px #103136 inset;
+}
+
+@media only screen and (max-width: 600px) {
+    section {
+        min-width: 350px;
+    }
+}
+
+.loader {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 75px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.loader-7 .line {
+    width: 8px;
+    position: absolute;
+    border-radius: 5px;
+    bottom: 0;
+    background: -webkit-gradient(linear, left top, left bottom, from(#1ee95d), to(#5714ce));
+    background: -webkit-linear-gradient(top, #1ee95d, #5714ce);
+    background: linear-gradient(to bottom, #1ee95d, #5714ce);
+}
+
+.loader-7 .line1 {
+    left: 0;
+    -webkit-animation: line-grow 0.5s ease alternate infinite;
+    animation: line-grow 0.5s ease alternate infinite;
+}
+
+.loader-7 .line2 {
+    left: 20px;
+    -webkit-animation: line-grow 0.5s 0.2s ease alternate infinite;
+    animation: line-grow 0.5s 0.2s ease alternate infinite;
+}
+
+.loader-7 .line3 {
+    left: 40px;
+    -webkit-animation: line-grow 0.5s 0.4s ease alternate infinite;
+    animation: line-grow 0.5s 0.4s ease alternate infinite;
+}
+
+@-webkit-keyframes line-grow {
+    0% {
+        height: 0;
+    }
+    100% {
+        height: 75%;
+    }
+}
+
+@keyframes line-grow {
+    0% {
+        height: 0;
+    }
+    100% {
+        height: 75%;
+    }
+}

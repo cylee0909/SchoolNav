@@ -11,10 +11,15 @@
 <body>
 <div id='container'></div>
 <div id="tip">获取定位信息</div>
-<!--<div class="loader loader-7">-->
-<!--<div class="line line1"></div>-->
-<!--<div class="line line2"></div>-->
-<!--<div class="line line3"></div>-->
+
+<!--<div id="anim-loader">-->
+    <!--<section>-->
+        <!--<div class="loader loader-7">-->
+            <!--<div class="line line1"></div>-->
+            <!--<div class="line line2"></div>-->
+            <!--<div class="line line3"></div>-->
+        <!--</div>-->
+    <!--</section>-->
 <!--</div>-->
 <script>
 
@@ -23,40 +28,39 @@
         dragEnable: true,
         center: [116.33719, 39.942384],
         zoom: 17,
-        zooms:[14,20],
-        layers:[new AMap.TileLayer({
-            visible:false,    //是否可见
+        zooms: [14, 20],
+        layers: [new AMap.TileLayer({
+            visible: false,    //是否可见
         })]
     });
 
-//    map.on('complete', function(){
-//        var latlng = new AMap.LngLat(map.getCenter().lng, map.getCenter().lat)
-//        var tw = 277
-//        var th = 299
-//        var start = latlng.offset(-tw * 5, th * 5)
-//        for (var i = 0; i < 81; i++) {
-//            var col = i % 9
-//            var row = parseInt(i / 9)
-//            startPos = start.offset(col * tw, row * (-th))
-//            name = prefixInteger(i + 1, 2)
-//            console.log(col + " "+row+" "+name)
-//            // 地图图块加载完成后触发
-//            var imageLayer = new AMap.ImageLayer({
-//                url: 'images/school_'+name+'.jpg',
-//                bounds : new AMap.Bounds(
-//                        startPos,
-//                        startPos.offset(tw+1, -th-1)),
-//                zoom: 17,
-//            });
-//            map.add(imageLayer);
-//        }
-//    });
+    //    map.on('complete', function(){
+    //        var latlng = new AMap.LngLat(map.getCenter().lng, map.getCenter().lat)
+    //        var tw = 277
+    //        var th = 299
+    //        var start = latlng.offset(-tw * 5, th * 5)
+    //        for (var i = 0; i < 81; i++) {
+    //            var col = i % 9
+    //            var row = parseInt(i / 9)
+    //            startPos = start.offset(col * tw, row * (-th))
+    //            name = prefixInteger(i + 1, 2)
+    //            console.log(col + " "+row+" "+name)
+    //            // 地图图块加载完成后触发
+    //            var imageLayer = new AMap.ImageLayer({
+    //                url: 'images/school_'+name+'.jpg',
+    //                bounds : new AMap.Bounds(
+    //                        startPos,
+    //                        startPos.offset(tw+1, -th-1)),
+    //                zoom: 17,
+    //            });
+    //            map.add(imageLayer);
+    //        }
+    //    });
 
     function prefixInteger(num, length) {
         if (num.toString().length > length) return num;
         return (Array(length).join('0') + num).slice(-length);
     }
-
 
 
     //在指定位置打开信息窗体
@@ -72,7 +76,7 @@
         infoWindow.open(map, map.getCenter());
     }
 
-    map.plugin('AMap.Geolocation', function() {
+    map.plugin('AMap.Geolocation', function () {
         geolocation = new AMap.Geolocation({
             enableHighAccuracy: true,//是否使用高精度定位，默认:true
             timeout: 10000,          //超过10秒后停止定位，默认：无穷大
@@ -83,32 +87,27 @@
             showMarker: true,        //定位成功后在定位到的位置显示点标记，默认：true
             showCircle: true,        //定位成功后用圆圈表示定位精度范围，默认：true
             panToLocation: false,     //定位成功后将定位到的位置作为地图中心点，默认：true
-            zoomToAccuracy:false      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+            zoomToAccuracy: false      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
         });
         map.addControl(geolocation);
         AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
         AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
     });
 
-
-    document.getElementById('tip').onclick = function () {
+    geolocation.getCurrentPosition();
+    setInterval(function () {
         geolocation.getCurrentPosition();
-    }
-
-//    geolocation.getCurrentPosition();
-//    setInterval(function () {
-//        geolocation.getCurrentPosition();
-//    }, 10 * 1000); // 10s
+    }, 10 * 1000); // 10s
 
     var firstLocation = true;
     var locationCnt = 0;
     //解析定位结果
     function onComplete(data) {
         locationCnt++;
-        var str=['第'+locationCnt+'次定位成功'];
+        var str = ['第' + locationCnt + '次定位成功'];
         str.push('经度：' + data.position.getLng());
         str.push('纬度：' + data.position.getLat());
-        if(data.accuracy){
+        if (data.accuracy) {
             str.push('精度：' + data.accuracy + ' 米');
         }//如为IP精确定位结果则没有精度信息
         str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
@@ -121,16 +120,7 @@
             setTimeout(function () {
                 map.setCenter(data.position);
                 openInfo();
-            },10);
-
-//            var imageLayer = new AMap.ImageLayer({
-//                url: 'images/school.jpg',
-//                bounds : new AMap.Bounds(
-//                    data.position.offset(-300,-200),
-//                    data.position.offset(300,200)),
-//                zoom: 17,
-//            });
-//            map.add(imageLayer);
+            }, 10);
 
             var latlng = data.position
             var tw = 277
@@ -141,13 +131,13 @@
                 var row = parseInt(i / 9)
                 startPos = start.offset(col * tw, row * (-th))
                 name = prefixInteger(i + 1, 2)
-                console.log(col + " "+row+" "+name)
+                console.log(col + " " + row + " " + name)
                 // 地图图块加载完成后触发
                 var imageLayer = new AMap.ImageLayer({
-                    url: 'images/school_'+name+'.jpg',
-                    bounds : new AMap.Bounds(
+                    url: 'images/school_' + name + '.jpg',
+                    bounds: new AMap.Bounds(
                             startPos,
-                            startPos.offset(tw+1, -th-1)),
+                            startPos.offset(tw + 1, -th - 1)),
                     zoom: 17,
                 });
                 map.add(imageLayer);
@@ -161,7 +151,7 @@
         document.getElementById('tip').innerHTML = '定位失败';
     }
 
-//    map.setLimitBounds(map.getBounds());
+    //    map.setLimitBounds(map.getBounds());
 
 </script>
 </body>
