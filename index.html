@@ -26,36 +26,111 @@
     var map = new AMap.Map('container', {
         resizeEnable: true,
         dragEnable: true,
-        center: [116.33719, 39.942384],
+        center: [119.727949,30.256489],
         zoom: 17,
-        zooms: [14, 20],
+        zooms: [5, 20],
         layers: [new AMap.TileLayer({
-            visible: false,    //是否可见
+            visible: true,    //是否可见
         })]
     });
 
-    //    map.on('complete', function(){
-    //        var latlng = new AMap.LngLat(map.getCenter().lng, map.getCenter().lat)
-    //        var tw = 277
-    //        var th = 299
-    //        var start = latlng.offset(-tw * 5, th * 5)
-    //        for (var i = 0; i < 81; i++) {
-    //            var col = i % 9
-    //            var row = parseInt(i / 9)
-    //            startPos = start.offset(col * tw, row * (-th))
-    //            name = prefixInteger(i + 1, 2)
-    //            console.log(col + " "+row+" "+name)
-    //            // 地图图块加载完成后触发
-    //            var imageLayer = new AMap.ImageLayer({
-    //                url: 'images/school_'+name+'.jpg',
-    //                bounds : new AMap.Bounds(
-    //                        startPos,
-    //                        startPos.offset(tw+1, -th-1)),
-    //                zoom: 17,
-    //            });
-    //            map.add(imageLayer);
-    //        }
-    //    });
+//        map.on('complete', function(){
+//            var latlng = new AMap.LngLat(map.getCenter().lng, map.getCenter().lat)
+//            var scale = 0.4
+//            var tw = 277 * scale
+//            var th = 299 * scale
+//            var start = latlng.offset(-tw * 5, th * 5)
+//            start = new AMap.LngLat(119.720262,30.262857)
+//            for (var i = 0; i < 81; i++) {
+//                var col = i % 9
+//                var row = parseInt(i / 9)
+//                startPos = start.offset(col * tw, row * (-th))
+//                name = prefixInteger(i + 1, 2)
+//                console.log(col + " "+row+" "+name)
+//                // 地图图块加载完成后触发
+//                var imageLayer = new AMap.ImageLayer({
+//                    url: 'images/school_'+name+'.jpg',
+//                    opacity:0.1,
+//                    bounds : new AMap.Bounds(
+//                            startPos,
+//                            startPos.offset(tw+1, -th-1)),
+//                    zoom: 17,
+//                });
+//                map.add(imageLayer);
+//            }
+//        });
+
+//    function loadTile(scale, lng, lat) {
+//        map.setLayers([new AMap.TileLayer({
+//            visible: true,    //是否可见
+//        })]);
+//
+//        var tw = 277 * scale
+//        var th = 299 * scale
+//        var start = new AMap.LngLat(lng,lat)
+//        for (var i = 0; i < 81; i++) {
+//            var col = i % 9
+//            var row = parseInt(i / 9)
+//            startPos = start.offset(col * tw, row * (-th))
+//            name = prefixInteger(i + 1, 2)
+////            console.log(col + " "+row+" "+name)
+//            // 地图图块加载完成后触发
+//            var imageLayer = new AMap.ImageLayer({
+//                url: 'images/school_'+name+'.jpg',
+//                opacity:0.4,
+//                bounds : new AMap.Bounds(
+//                        startPos,
+//                        startPos.offset(tw+1, -th-1)),
+//                zoom: 17,
+//            });
+//            map.add(imageLayer);
+//        }
+//    }
+
+    var lng = 119.719262
+    var lat = 30.265657
+    var step = 0.0001
+    var scale = 0.64
+    var scaleStep = 0.01
+
+//    scale = 0.6400000000000002, lng= 119.71926199999997, lat = 30.265656999999994
+
+//    function reload() {
+//        document.getElementById('tip').innerHTML = "scale = "+scale+", lng= "+lng+", lat = "+lat;
+//        console.log("scale = "+scale+", lng= "+lng+", lat = "+lat)
+//        loadTile(scale, lng, lat)
+//    }
+//
+//    function keyUp(e) {
+//        var currKey=0, e=e||event;
+//        currKey=e.keyCode||e.which||e.charCode;
+//        var keyName = String.fromCharCode(currKey);
+//        console.log("key = "+keyName)
+//        if (keyName == 'C') {
+//            map.setLayers([new AMap.TileLayer({
+//                visible: true,    //是否可见
+//            })]);
+//        } else if (keyName == 'W') {
+//            lat += step
+//            reload()
+//        } else if (keyName == 'S') {
+//            lat -= step
+//            reload()
+//        } else if (keyName == 'A') {
+//            lng -= step
+//            reload()
+//        } else if (keyName == 'D') {
+//            lng += step
+//            reload()
+//        } else if (keyName == 'J') {
+//            scale += scaleStep
+//            reload()
+//        } else if (keyName == 'K') {
+//            scale -= scaleStep
+//            reload()
+//        }
+//    }
+//    document.onkeyup = keyUp;
 
     function prefixInteger(num, length) {
         if (num.toString().length > length) return num;
@@ -122,10 +197,12 @@
                 openInfo();
             }, 10);
 
-            var latlng = data.position
-            var tw = 277
-            var th = 299
-            var start = latlng.offset(-tw * 5, th * 5)
+            var mapLng = 119.719262
+            var mapLat = 30.265657
+            var scale = 0.64
+            var tw = 277 * scale
+            var th = 299 * scale
+            var start = new AMap.LngLat(mapLng, mapLat)
             for (var i = 0; i < 81; i++) {
                 var col = i % 9
                 var row = parseInt(i / 9)
@@ -137,7 +214,7 @@
                     url: 'images/school_' + name + '.jpg',
                     bounds: new AMap.Bounds(
                             startPos,
-                            startPos.offset(tw + 1, -th - 1)),
+                            startPos.offset(tw + 0.5, -th - 0.5)),
                     zoom: 17,
                 });
                 map.add(imageLayer);
