@@ -23,6 +23,9 @@
 <!--</div>-->
 <script>
 
+//    var satellite = new AMap.TileLayer.Satellite();
+//    var roadNet = new AMap.TileLayer.RoadNet();
+
     var map = new AMap.Map('container', {
         resizeEnable: true,
         dragEnable: true,
@@ -35,12 +38,9 @@
     });
 
 //        map.on('complete', function(){
-//            var latlng = new AMap.LngLat(map.getCenter().lng, map.getCenter().lat)
-//            var scale = 0.4
 //            var tw = 277 * scale
 //            var th = 299 * scale
-//            var start = latlng.offset(-tw * 5, th * 5)
-//            start = new AMap.LngLat(119.720262,30.262857)
+//            start = new AMap.LngLat(lng, lat)
 //            for (var i = 0; i < 81; i++) {
 //                var col = i % 9
 //                var row = parseInt(i / 9)
@@ -59,11 +59,9 @@
 //                map.add(imageLayer);
 //            }
 //        });
-
+//
 //    function loadTile(scale, lng, lat) {
-//        map.setLayers([new AMap.TileLayer({
-//            visible: true,    //是否可见
-//        })]);
+//        map.setLayers([satellite, roadNet]);
 //
 //        var tw = 277 * scale
 //        var th = 299 * scale
@@ -86,30 +84,28 @@
 //            map.add(imageLayer);
 //        }
 //    }
-
-    var lng = 119.719262
-    var lat = 30.265657
-    var step = 0.0001
-    var scale = 0.64
-    var scaleStep = 0.01
-
-//    scale = 0.6400000000000002, lng= 119.71926199999997, lat = 30.265656999999994
-
+//
+//    var lng = 119.7192339
+//    var lat = 30.265579
+//    var step = 0.000001
+//    var scale = 0.639
+//    var scaleStep = 0.0001
+//
+//    scale = 0.641, lng= 119.71920199999998, lat = 30.265627000000002
+//    scale = 0.6390000000000002, lng= 119.71923389999992, lat = 30.26557899999995
 //    function reload() {
 //        document.getElementById('tip').innerHTML = "scale = "+scale+", lng= "+lng+", lat = "+lat;
 //        console.log("scale = "+scale+", lng= "+lng+", lat = "+lat)
 //        loadTile(scale, lng, lat)
 //    }
-//
+
 //    function keyUp(e) {
 //        var currKey=0, e=e||event;
 //        currKey=e.keyCode||e.which||e.charCode;
 //        var keyName = String.fromCharCode(currKey);
 //        console.log("key = "+keyName)
 //        if (keyName == 'C') {
-//            map.setLayers([new AMap.TileLayer({
-//                visible: true,    //是否可见
-//            })]);
+//            map.setLayers([satellite, roadNet]);
 //        } else if (keyName == 'W') {
 //            lat += step
 //            reload()
@@ -196,10 +192,9 @@
                 map.setCenter(data.position);
                 openInfo();
             }, 10);
-
-            var mapLng = 119.719262
-            var mapLat = 30.265657
-            var scale = 0.64
+            var mapLng = 119.7192339
+            var mapLat = 30.265579
+            var scale = 0.639
             var tw = 277 * scale
             var th = 299 * scale
             var start = new AMap.LngLat(mapLng, mapLat)
