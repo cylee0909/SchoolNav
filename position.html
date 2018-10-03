@@ -9,14 +9,31 @@
     <script src="http://webapi.amap.com/maps?v=1.4.6&key=a0e90f40a2276e6a4e06ef073cf92f9c"></script>
 </head>
 <body>
+
 <div id='container'></div>
 <div id="tip">获取定位信息</div>
-
+<div id="tip2">
+</div>
 <script>
+
+    Array.prototype.indexOf = function (val) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == val) return i;
+        }
+        return -1;
+    };
+
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+
     var map = new AMap.Map('container', {
         resizeEnable: true,
         dragEnable: true,
-        center: [119.727949,30.256489],
+        center: [119.727949, 30.256489],
         zoom: 17,
         zooms: [5, 20],
         layers: [new AMap.TileLayer({
@@ -82,41 +99,55 @@
         console.log(str);
         if (firstLocation) {
             firstLocation = false;
-            //不生效
-            //map.setCenter(data.position);
-            setTimeout(function () {
-                map.setCenter(data.position);
-                openInfo();
-            }, 10);
-            var mapLng = 119.7192339
-            var mapLat = 30.265579
-            var scale = 0.639
-            var tw = 277 * scale
-            var th = 299 * scale
-            var start = new AMap.LngLat(mapLng, mapLat)
-            for (var i = 0; i < 81; i++) {
-                var col = i % 9
-                var row = parseInt(i / 9)
-                startPos = start.offset(col * tw, row * (-th))
-                name = prefixInteger(i + 1, 2)
-                console.log(col + " " + row + " " + name)
-                // 地图图块加载完成后触发
-                var imageLayer = new AMap.ImageLayer({
-                    url: 'images/school_' + name + '.jpg',
-                    bounds: new AMap.Bounds(
-                            startPos,
-                            startPos.offset(tw + 0.5, -th - 0.5)),
-                    zoom: 17,
-                });
-                map.add(imageLayer);
-            }
+            loadTile()
         }
     }
+
 
     //解析定位错误信息
     function onError(data) {
         document.getElementById('tip').innerHTML = '定位失败';
+        if (firstLocation) {
+            firstLocation = false;
+            loadTile()
+        }
     }
+
+    if (firstLocation) {
+        firstLocation = false;
+        loadTile()
+    }
+
+    function loadTile() {
+        setTimeout(function () {
+//            map.setCenter(data.position);
+//            openInfo();
+        }, 10);
+        var mapLng = 119.7192339
+        var mapLat = 30.265579
+        var scale = 0.639
+        var tw = 277 * scale
+        var th = 299 * scale
+        var start = new AMap.LngLat(mapLng, mapLat)
+        for (var i = 0; i < 81; i++) {
+            var col = i % 9
+            var row = parseInt(i / 9)
+            startPos = start.offset(col * tw, row * (-th))
+            name = prefixInteger(i + 1, 2)
+            console.log(col + " " + row + " " + name)
+            // 地图图块加载完成后触发
+            var imageLayer = new AMap.ImageLayer({
+                url: 'images/school_' + name + '.jpg',
+                bounds: new AMap.Bounds(
+                        startPos,
+                        startPos.offset(tw + 0.5, -th - 0.5)),
+                zoom: 17,
+            });
+            map.add(imageLayer);
+        }
+    }
+
 </script>
+<script src="./js/show_pos.js"></script>
 </body>
 </html>

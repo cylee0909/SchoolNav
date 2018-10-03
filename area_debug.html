@@ -11,12 +11,27 @@
 <body>
 <div id='container'></div>
 <div id="tip">获取定位信息</div>
-
+<div id="tip2"></div>
 <script>
+
+    Array.prototype.indexOf = function (val) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == val) return i;
+        }
+        return -1;
+    };
+
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+
     var map = new AMap.Map('container', {
         resizeEnable: true,
         dragEnable: true,
-        center: [119.727949,30.256489],
+        center: [119.727949, 30.256489],
         zoom: 17,
         zooms: [5, 20],
         layers: [new AMap.TileLayer({
@@ -82,41 +97,114 @@
         console.log(str);
         if (firstLocation) {
             firstLocation = false;
-            //不生效
-            //map.setCenter(data.position);
-            setTimeout(function () {
-                map.setCenter(data.position);
-                openInfo();
-            }, 10);
-            var mapLng = 119.7192339
-            var mapLat = 30.265579
-            var scale = 0.639
-            var tw = 277 * scale
-            var th = 299 * scale
-            var start = new AMap.LngLat(mapLng, mapLat)
-            for (var i = 0; i < 81; i++) {
-                var col = i % 9
-                var row = parseInt(i / 9)
-                startPos = start.offset(col * tw, row * (-th))
-                name = prefixInteger(i + 1, 2)
-                console.log(col + " " + row + " " + name)
-                // 地图图块加载完成后触发
-                var imageLayer = new AMap.ImageLayer({
-                    url: 'images/school_' + name + '.jpg',
-                    bounds: new AMap.Bounds(
-                            startPos,
-                            startPos.offset(tw + 0.5, -th - 0.5)),
-                    zoom: 17,
-                });
-                map.add(imageLayer);
-            }
+            loadTile()
         }
     }
+
 
     //解析定位错误信息
     function onError(data) {
         document.getElementById('tip').innerHTML = '定位失败';
+        if (firstLocation) {
+            firstLocation = false;
+            loadTile()
+        }
     }
+
+    if (firstLocation) {
+        firstLocation = false;
+        loadTile()
+    }
+
+    //lng: 119.719236, lat: 30.263833
+    //lng: 119.735794, lat: 30.2484
+    var northEast = new AMap.LngLat(119.701551, 30.269935);
+    var southWest = new AMap.LngLat(119.753049, 30.239167);
+    var bounds = new AMap.Bounds(southWest, northEast);
+    //    map.setLimitBounds(bounds)
+    //    map.setLimitBounds(map.getBounds());
+
+    function loadTile() {
+        setTimeout(function () {
+//            map.setCenter(data.position);
+//            openInfo();
+        }, 10);
+        var mapLng = 119.7192339
+        var mapLat = 30.265579
+        var scale = 0.639
+        var tw = 277 * scale
+        var th = 299 * scale
+        var start = new AMap.LngLat(mapLng, mapLat)
+        for (var i = 0; i < 81; i++) {
+            var col = i % 9
+            var row = parseInt(i / 9)
+            startPos = start.offset(col * tw, row * (-th))
+            name = prefixInteger(i + 1, 2)
+            console.log(col + " " + row + " " + name)
+            // 地图图块加载完成后触发
+            var imageLayer = new AMap.ImageLayer({
+                url: 'images/school_' + name + '.jpg',
+                bounds: new AMap.Bounds(
+                        startPos,
+                        startPos.offset(tw + 0.5, -th - 0.5)),
+                zoom: 17,
+            });
+            map.add(imageLayer);
+        }
+
+        // 获取 canvas 实例
+        var canvas = document.createElement('canvas');
+        // 将 canvas 宽高设置为地图实例的宽高
+        canvas.width = map.getSize().width;
+        canvas.height = map.getSize().height;
+        // 创建一个自定义图层
+        var customLayer = new AMap.CustomLayer(canvas, {
+            zIndex: 12,
+            zooms: 17 // 设置可见级别，[最小级别，最大级别]
+        });
+
+        var circles = []
+        map.add(customLayer);
+        map.on('click', function (e) {
+            var lng = e.lnglat.getLng()
+            var lat = e.lnglat.getLat()
+
+            // 构造矢量圆形
+            var circle = new AMap.Circle({
+                center: new AMap.LngLat(lng, lat), // 圆心位置
+                radius: 10,  //半径
+                strokeColor: "#F33",  //线颜色
+                strokeOpacity: 1,  //线透明度
+                strokeWeight: 3,  //线粗细度
+                fillColor: "#ee2200",  //填充颜色
+                fillOpacity: 0.35 //填充透明度
+            });
+            circles.push(circle)
+            map.add(circle)
+            circle.on('click', function (e) {
+                circles.remove(circle)
+                map.remove(circle)
+                refreshCircles()
+            })
+            refreshCircles()
+
+//            var ctx = canvas.getContext('2d');
+//            ctx.fillStyle="#FF0000";
+//            ctx.fillRect(0,0,150,75);
+        })
+
+        function refreshCircles() {
+            var result = "[";
+            circles.forEach(function (item) {
+                        var lnglat = item.getCenter()
+                        result += "[" + lnglat.lng + "," + lnglat.lat + "],\n"
+                    }
+            )
+            result += "]"
+            document.querySelector("#tip2").innerText = result
+        }
+    }
+
 </script>
 </body>
 </html>
