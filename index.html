@@ -5,14 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <title>SchoolNav</title>
-    <link rel="stylesheet" type="text/css" href="css/map.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/main.css"/>
     <script src="http://webapi.amap.com/maps?v=1.4.6&key=a0e90f40a2276e6a4e06ef073cf92f9c"></script>
 </head>
 <body>
 <div id='container'></div>
 <div id="tip">获取定位信息</div>
-
-<script>
+<div id="bottom_info">
+    <div id="area_name"></div>
+    <div id="area_desc"></div>
+    <div id="area_more">点击查看更多>></div>
+</div>
+<script type="text/javascript">
     var map = new AMap.Map('container', {
         resizeEnable: true,
         dragEnable: true,
@@ -23,24 +27,11 @@
             visible: true,    //是否可见
         })]
     });
+    var locationMarker;
 
     function prefixInteger(num, length) {
         if (num.toString().length > length) return num;
         return (Array(length).join('0') + num).slice(-length);
-    }
-
-
-    //在指定位置打开信息窗体
-    function openInfo() {
-        //构建信息窗体中显示的内容
-        var info = [];
-        info.push("<div style=\"padding:0px 0px 0px 4px;\"><b>北京动物园</b>");
-        info.push("电话 : 010-68315131   邮编 : 100102");
-        info.push("地址 :北京市西直门外大街137号</div></div>");
-        infoWindow = new AMap.InfoWindow({
-            content: info.join("<br/>")  //使用默认信息窗体框样式，显示信息内容
-        });
-        infoWindow.open(map, map.getCenter());
     }
 
     map.plugin('AMap.Geolocation', function () {
@@ -66,50 +57,23 @@
         geolocation.getCurrentPosition();
     }, 10 * 1000); // 10s
 
-    var firstLocation = true;
-    var locationCnt = 0;
+    map.on('complete', function(){
+        loadTile()
+    });
+
     //解析定位结果
     function onComplete(data) {
-        locationCnt++;
-        var str = ['第' + locationCnt + '次定位成功'];
-        str.push('经度：' + data.position.getLng());
-        str.push('纬度：' + data.position.getLat());
-        if (data.accuracy) {
-            str.push('精度：' + data.accuracy + ' 米');
-        }//如为IP精确定位结果则没有精度信息
-        str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
-        document.getElementById('tip').innerHTML = str.join('<br>');
-        console.log(str);
-        if (firstLocation) {
-            firstLocation = false;
-            //不生效
-            //map.setCenter(data.position);
-            setTimeout(function () {
-                map.setCenter(data.position);
-                openInfo();
-            }, 10);
-            var mapLng = 119.7192339
-            var mapLat = 30.265579
-            var scale = 0.639
-            var tw = 277 * scale
-            var th = 299 * scale
-            var start = new AMap.LngLat(mapLng, mapLat)
-            for (var i = 0; i < 81; i++) {
-                var col = i % 9
-                var row = parseInt(i / 9)
-                startPos = start.offset(col * tw, row * (-th))
-                name = prefixInteger(i + 1, 2)
-                console.log(col + " " + row + " " + name)
-                // 地图图块加载完成后触发
-                var imageLayer = new AMap.ImageLayer({
-                    url: 'images/school_' + name + '.jpg',
-                    bounds: new AMap.Bounds(
-                            startPos,
-                            startPos.offset(tw + 0.5, -th - 0.5)),
-                    zoom: 17,
-                });
-                map.add(imageLayer);
-            }
+        var lng = data.position.getLng();
+        var lat = data.position.getLat();
+        if (!locationMarker) {
+            locationMarker = new AMap.Marker({
+                position: new AMap.LngLat(lng,lat),
+                offset: new AMap.Pixel(-26, -26),
+                icon: './images/current.png',
+            });
+            map.add(locationMarker);
+        } else {
+           locationMarker.setPosition(new AMap.LngLat(lng,lat));
         }
     }
 
@@ -117,6 +81,32 @@
     function onError(data) {
         document.getElementById('tip').innerHTML = '定位失败';
     }
+
+    function loadTile() {
+        var mapLng = 119.7192339
+        var mapLat = 30.265579
+        var scale = 0.639
+        var tw = 277 * scale
+        var th = 299 * scale
+        var start = new AMap.LngLat(mapLng, mapLat)
+        for (var i = 0; i < 81; i++) {
+            var col = i % 9
+            var row = parseInt(i / 9)
+            startPos = start.offset(col * tw, row * (-th))
+            name = prefixInteger(i + 1, 2)
+            console.log(col + " " + row + " " + name)
+            // 地图图块加载完成后触发
+            var imageLayer = new AMap.ImageLayer({
+                url: 'images/school_' + name + '.jpg',
+                bounds: new AMap.Bounds(
+                        startPos,
+                        startPos.offset(tw + 0.5, -th - 0.5)),
+                zoom: 17,
+            });
+            map.add(imageLayer);
+        }
+    }
 </script>
+<script type="text/javascript" src="./js/main.js"></script>
 </body>
 </html>
