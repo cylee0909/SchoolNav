@@ -10,7 +10,7 @@
 </head>
 <body>
 <div id='container'></div>
-<div id="tip">获取定位信息</div>
+<div id="tip"></div>
 <div id="bottom_info">
     <div id="area_name"></div>
     <div id="area_desc"></div>
@@ -73,13 +73,21 @@
             });
             map.add(locationMarker);
         } else {
-           locationMarker.setPosition(new AMap.LngLat(lng,lat));
+           locationMarker.setPosition(data.position);
+        }
+        var tipHtml = document.getElementById('tip');
+        tipHtml.style.display = 'none';
+        if (onLocation) {
+            onLocation(lng, lat);
+            map.setCenter(data.position);
         }
     }
 
     //解析定位错误信息
     function onError(data) {
-        document.getElementById('tip').innerHTML = '定位失败';
+        var tipHtml = document.getElementById('tip');
+        tipHtml.style.display = 'block';
+        tipHtml.innerHTML = '定位失败';
     }
 
     function loadTile() {
