@@ -41,7 +41,7 @@
             maximumAge: 0,           //定位结果缓存0毫秒，默认：0
             convert: true,           //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
             showButton: true,        //显示定位按钮，默认：true
-            buttonPosition: 'LB',    //定位按钮停靠位置，默认：'LB'，左下角
+            buttonPosition: 'TB',    //定位按钮停靠位置，默认：'LB'，左下角
             showMarker: true,        //定位成功后在定位到的位置显示点标记，默认：true
             showCircle: true,        //定位成功后用圆圈表示定位精度范围，默认：true
             panToLocation: false,     //定位成功后将定位到的位置作为地图中心点，默认：true
@@ -57,9 +57,7 @@
         geolocation.getCurrentPosition();
     }, 10 * 1000); // 10s
 
-    map.on('complete', function(){
-        loadTile()
-    });
+    loadTile()
 
     //解析定位结果
     function onComplete(data) {
@@ -105,7 +103,7 @@
             console.log(col + " " + row + " " + name)
             // 地图图块加载完成后触发
             var imageLayer = new AMap.ImageLayer({
-                url: 'images/school_' + name + '.jpg',
+                url: './images/school_' + name + '.jpg',
                 bounds: new AMap.Bounds(
                         startPos,
                         startPos.offset(tw + 0.5, -th - 0.5)),

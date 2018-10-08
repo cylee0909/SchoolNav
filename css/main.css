@@ -73,9 +73,9 @@ html, body {
     margin-right: 10%;
 }
 
-.amap-controls {
-    display: none;
-}
+/*.amap-controls {*/
+    /*display: none;*/
+/*}*/
 .amap-logo {
     bottom:-100%;
     display: none;
