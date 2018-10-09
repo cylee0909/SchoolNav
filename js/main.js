@@ -22,13 +22,6 @@ var link = JSON.parse('["http://bg.zafu.edu.cn/sub/0104/156/?menu_id=1","http://
 var DISTANCE = 10;
 var currentAreas = []
 
-var infoContainer = document.querySelector("#bottom_info");
-if (infoContainer) {
-    AMap.event.addDomListener(infoContainer, "click", function(ev) {
-        window.location.href="http://bg.zafu.edu.cn/sub/0104/172/?menu_id="+link[infoContainer.area_id];
-    });
-}
-
 function lightArea(areas) {
     var interval = setInterval(function () {
         if (areas) {
@@ -107,10 +100,13 @@ function onAreaClick(area) {
     var nameText = document.querySelector("#area_name");
     var descText = document.querySelector("#area_desc");
     var container = document.querySelector("#bottom_info");
-    container.area_id = area.id;
+    var index = area.id - 1;
     container.style.display='block';
     nameText.innerText=area.name;
-    descText.innerText = desc[area.id];
+    descText.innerText = desc[index];
+    container.onclick = function () {
+        window.location.href=link[index];
+    };
 }
 
 function onLocation(lng, lat) {
@@ -171,19 +167,21 @@ map.on('click', function (e) {
     if (DEBUG) {
         onLocation(lng, lat);
     }
+    var handled = false;
     data.forEach(function (pi) {
         var p = pi.p;
         if (!handled && p) {
             p.forEach(function (item) {
                 if (!handled && pointInPoly(pos, item)) {
-                    if (currentAreas.indexOf(pi) != -1) {
-                        onAreaClick(pi);
-                        handled = true;
-                    }
+                    onAreaClick(pi);
+                    handled = true;
                 }
             })
         }
     })
+    if(!handled) {
+        clearAreas(null);
+    }
 })
 
 function pointInPoly(pt, poly) {

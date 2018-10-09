@@ -10,6 +10,9 @@
 </head>
 <body>
 <div id='container'></div>
+<div id="start_nav">
+    <div id="nav_op"></div>
+</div>
 <div id="tip"></div>
 <div id="bottom_info">
     <div id="area_name"></div>
@@ -21,12 +24,13 @@
         resizeEnable: true,
         dragEnable: true,
         center: [119.727949,30.256489],
-        zoom: 17,
+        zoom: 16,
         zooms: [5, 20],
         layers: [new AMap.TileLayer({
             visible: true,    //是否可见
         })]
     });
+    var navInterval;
     var locationMarker;
 
     function prefixInteger(num, length) {
@@ -51,11 +55,6 @@
         AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
         AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
     });
-
-    geolocation.getCurrentPosition();
-    setInterval(function () {
-        geolocation.getCurrentPosition();
-    }, 10 * 1000); // 10s
 
     loadTile()
 
@@ -114,5 +113,6 @@
     }
 </script>
 <script type="text/javascript" src="./js/main.js"></script>
+<script type="text/javascript" src="./js/nav.js"></script>
 </body>
 </html>

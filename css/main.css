@@ -15,6 +15,18 @@ html, body {
     height: 100%;
 }
 
+#start_nav {
+    position: absolute;
+    z-index: 9999;
+    left: 10px;
+    top: 20px;
+}
+
+#nav_op {
+    width: 40px;
+    height: 40px;
+}
+
 #tip {
     background-color: #fff;
     padding-left: 10px;
@@ -33,11 +45,12 @@ html, body {
     bottom:0px;
     height: 100px;
     width:100%;
-    background: -webkit-linear-gradient(#00000000, #00252b); /* Safari 5.1 - 6.0 */
-    background: -o-linear-gradient(#00000000, #00252b); /* Opera 11.1 - 12.0 */
-    background: -moz-linear-gradient(#00000000, #00252b); /* Firefox 3.6 - 15 */
-    background: linear-gradient(#00000000, #00252b); /* 标准的语法 */
     display: none;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,00252b+100&1+0,1+0,1+0,1+0,0+0,1+100 */
+    background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,37,43,1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,37,43,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,37,43,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#00252b',GradientType=0 ); /* IE6-9 */
 }
 
 #area_name {
@@ -73,9 +86,10 @@ html, body {
     margin-right: 10%;
 }
 
-/*.amap-controls {*/
-    /*display: none;*/
-/*}*/
+.amap-controls {
+    display: none;
+}
+
 .amap-logo {
     bottom:-100%;
     display: none;
